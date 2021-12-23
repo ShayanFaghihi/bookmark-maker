@@ -21,6 +21,28 @@ removeIcons.forEach((icon,idx) => {
 });
 
 
+
+// Open Overlay
+const openOverlay = () => {
+    overlayShown = true;
+    overlay.style.display = "flex";
+}
+
+
+// Close Overlay
+const closeOverlay = () => {
+    overlay.style.display = "none";
+    overlayShown = false;
+}
+
+// Remove Bookmark
+const removeBookmark = (e) => {
+    // e.srcElement.parentElement.remove();
+}
+
+
+
+
 // Set Attribute Function
 const createAttribute = (el,obj) => {
     for(let key in obj) {
@@ -37,89 +59,79 @@ const getFormData = e => {
     bookmarks.push({siteName,siteUrl,siteFavIcon});
 
     insertBookmark();
+    storeOnLocalStorage();
 }
 
 const insertBookmark = () => {
     // Close Overlay
     closeOverlay()
 
-    // Reading from bookmarks array for existing bookmarks
-    const ArrayLastItem = bookmarks.length - 1;
+    // Cleaning HTML inorder to refill it again
+    bookmarkWrapper.innerHTML = '';
 
-    // Creating bookmark container
-    const element = document.createElement("div");
-    createAttribute(element, {
-        "class" : "bookmark__item"
+    // Looping into bookmarks array
+    bookmarks.forEach((bookmark,idx) => {
+
+        // Creating bookmark container
+        const element = document.createElement("div");
+        createAttribute(element, {
+            "class" : "bookmark__item"
+        })
+        //  Creating <a> tag
+        const item = document.createElement("a");
+        createAttribute(item,{
+            "href": bookmark.siteUrl,
+            "target":"blank"
+        });
+    
+        // Creating <span> tag
+        const span = document.createElement("span");
+        createAttribute(span, {
+            "class" : "bookmark__fav",
+            "id" : "bookmarkFavIcon"
+        })
+    
+        // Creating <img> tag
+        const img = document.createElement("img");
+        createAttribute(img, {
+            "src" : bookmark.siteFavIcon
+        })
+    
+        // Creating close span
+        const closeSpan = document.createElement("span");
+        createAttribute(closeSpan,{
+            "class" : "bookmark__remove",
+            "id" : "remove"
+        })
+    
+        // Appending tags inser each other
+        span.appendChild(img);
+        element.appendChild(span);
+        element.appendChild(closeSpan);
+        item.append(bookmark.siteName);
+        element.appendChild(item);
+        bookmarkWrapper.appendChild(element);
+    
+    
+        // Adding Remove attribute
+        removeIcons = document.querySelectorAll("#remove");
+       
     })
-    //  Creating <a> tag
-    const item = document.createElement("a");
-    createAttribute(item,{
-        "href": bookmarks[ArrayLastItem].siteUrl,
-        "target":"blank"
-    });
 
-    // Creating <span> tag
-    const span = document.createElement("span");
-    createAttribute(span, {
-        "class" : "bookmark__fav",
-        "id" : "bookmarkFavIcon"
-    })
-
-    // Creating <img> tag
-    const img = document.createElement("img");
-    createAttribute(img, {
-        "src" : bookmarks[ArrayLastItem].siteFavIcon
-    })
-
-    // Creating close span
-    const closeSpan = document.createElement("span");
-    createAttribute(closeSpan,{
-        "class" : "bookmark__remove",
-        "id" : "remove"
-    })
-
-    // Appending tags inser each other
-    span.appendChild(img);
-    element.appendChild(span);
-    element.appendChild(closeSpan);
-    item.append(bookmarks[ArrayLastItem].siteName);
-    element.appendChild(item);
-    bookmarkWrapper.appendChild(element);
-
-
-    // Adding Remove attribute
-    removeIcons = document.querySelectorAll("#remove");
-    removeIcons.forEach(icon => {
-        icon.addEventListener("click",removeBookmark);
-    });
-   }
-
-
-// Open Overlay
-const openOverlay = () => {
-    overlayShown = true;
-    overlay.style.display = "flex";
 }
 
-
-// Close Overlay
-const closeOverlay = () => {
-    overlay.style.display = "none";
-    overlayShown = false;
+// Storing on Local Storage
+const storeOnLocalStorage = () => {
+   localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
 }
 
-
-// Remove Bookmark
-const removeBookmark = (e) => {
-    e.srcElement.parentElement.remove();
+// Reading From Local Storage
+if(localStorage.getItem("bookmarks")) {
+   bookmarks = (JSON.parse(localStorage.getItem("bookmarks")));
+   insertBookmark()
 }
 
 
 // Event Listeners
 createBtn.addEventListener("click",openOverlay)
 form.addEventListener("submit", getFormData);
-removeIcons.forEach(icon => {
-    icon.addEventListener("click",() => {
-        console.log("you have pushed remove icon")
-    })
-});
