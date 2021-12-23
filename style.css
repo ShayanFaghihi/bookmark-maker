@@ -90,6 +90,8 @@ body {
 
 .bookmark__item .bookmark__fav img{
     width: 20px;
+    /* Aligning the favicon with the text */
+    vertical-align: sub;
 }
 
 .bookmark__remove {
@@ -116,10 +118,25 @@ body {
     width: 100vw;
     height: 100vh;
     background-color: rgb(0 0 0 / 70%);
-
     display: none;
+    animation: showModal .5s ease-in;
+}
+
+
+.show-modal {
+    display: flex;
     justify-content: center;
     align-items: center;
+}
+
+@keyframes showModal {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 .overlay-box {
@@ -146,6 +163,14 @@ body {
     font-family: inherit;
 }
 
+.close-overlay {
+    text-align: right;
+    margin-bottom: 1.5rem;
+}
+
+.close-overlay #close {
+    cursor: pointer;
+}
 
 /* Media Queries */
 @media (min-width:780px) {
